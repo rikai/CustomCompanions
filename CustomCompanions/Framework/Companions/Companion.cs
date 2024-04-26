@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.GameData.HomeRenovations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -340,8 +341,13 @@ namespace CustomCompanions.Framework.Companions
                     Game1.spriteBatch.Draw(Game1.shadowTexture, Game1.GlobalToLocal(Game1.viewport, this.GetShadowOffset() + this.Position + new Vector2((float)(this.GetSpriteWidthForPositioning() * 4) / 2f, this.Sprite.getHeight())), Game1.shadowTexture.Bounds, Color.White, 0f, new Vector2(Game1.shadowTexture.Bounds.Center.X, Game1.shadowTexture.Bounds.Center.Y), Math.Max(0f, (4f + (float)this.yJumpOffset / 40f) * (float)this.Scale), SpriteEffects.None, shadowLayerDepth);
                 }
             }
-        }
 
+            if (CustomCompanions.isShowingCollisionBox)
+            {
+                var boundingBox = this.GetBoundingBox();
+                Game1.spriteBatch.Draw(CustomCompanions.collisionBoxTexture, Game1.GlobalToLocal(Game1.viewport, new Vector2(boundingBox.X, boundingBox.Y)), boundingBox, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, spriteLayerDepth + 0.1f);
+            }
+        }
         internal void DrawUnderwater(SpriteBatch b)
         {
             this.DoDraw(b, 1f);
