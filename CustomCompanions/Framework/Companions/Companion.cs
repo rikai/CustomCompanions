@@ -279,6 +279,11 @@ namespace CustomCompanions.Framework.Companions
             base.farmerPassesThrough = this.owner is null && this.model.EnableFarmerCollision ? false : true;
         }
 
+        public override bool canPassThroughActionTiles()
+        {
+            return false;
+        }
+
         public override Rectangle GetBoundingBox()
         {
             if (!this.HasCustomCollisionBox())
