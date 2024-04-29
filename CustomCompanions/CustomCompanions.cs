@@ -10,6 +10,7 @@ using CustomCompanions.Framework.Patches;
 using CustomCompanions.Framework.Utilities;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -30,6 +31,9 @@ namespace CustomCompanions
         internal const int PERIODIC_CHECK_INTERVAL = 300;
         internal const string COMPANION_KEY = "Companion";
         internal const string TOKEN_HEADER = "CustomCompanions/Companions/";
+
+        internal static bool isShowingCollisionBox;
+        internal static Texture2D collisionBoxTexture;
 
         private ISaveAnywhereApi _saveAnywhereApi;
         private IJsonAssetsApi _jsonAssetsApi;
@@ -68,6 +72,7 @@ namespace CustomCompanions
             helper.ConsoleCommands.Add("cc_clear", "Removes all map-based custom companions at the current location.\n\nUsage: cc_clear", this.DebugClear);
             helper.ConsoleCommands.Add("cc_reload", "Reloads all custom companion content packs. Note: This will remove all spawned companions.\n\nUsage: cc_reload", this.DebugReload);
             helper.ConsoleCommands.Add("cc_list", "Lists all custom companion keys in the log.\n\nUsage: cc_list", this.DebugList);
+            helper.ConsoleCommands.Add("cc_show_collision", "Shows all active companion's collision boxes.\n\nUsage: cc_show_collision", delegate { isShowingCollisionBox = !isShowingCollisionBox; });
 
             // Hook into GameLoop events
             helper.Events.GameLoop.Saving += this.OnSaving;
@@ -132,11 +137,6 @@ namespace CustomCompanions
                 _saveAnywhereApi.BeforeSave += this.OnSaving;
                 _saveAnywhereApi.AfterSave += this.OnCustomLoad; // Save Anywhere's AfterSave event doesn't seem to be triggered, known issue
                 _saveAnywhereApi.AfterLoad += this.OnCustomLoad;
-            }
-
-            if (Helper.ModRegistry.IsLoaded("bcmpinc.WearMoreRings") && ApiManager.HookIntoIWMR(Helper))
-            {
-                RingManager.wearMoreRingsApi = ApiManager.GetIWMRApi();
             }
 
             if (Helper.ModRegistry.IsLoaded("spacechase0.JsonAssets") && ApiManager.HookIntoJsonAssets(Helper))
@@ -365,6 +365,10 @@ namespace CustomCompanions
             // Set up the CompanionManager
             CompanionManager.activeCompanions = new List<BoundCompanions>();
             CompanionManager.sceneryCompanions = new List<SceneryCompanions>();
+
+            // Set debug texture
+            collisionBoxTexture = new Texture2D(Game1.graphics.GraphicsDevice, 1, 1);
+            collisionBoxTexture.SetData(new[] { Color.White * 0.8f });
         }
 
         internal void SpawnSceneryCompanions(GameLocation location, bool spawnOnlyRequiredCompanions = false)
