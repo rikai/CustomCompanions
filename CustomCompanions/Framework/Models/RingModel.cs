@@ -15,6 +15,7 @@ namespace CustomCompanions.Framework.Models
     {
         public string Name { get; set; }
         public string Owner { get; set; }
+        internal bool AddedViaContentPatcher { get; set; }
         public Dictionary<string, CompanionData> Companions { get; set; }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using CustomCompanions.Framework.Interfaces;
 using CustomCompanions.Framework.Models;
+using CustomCompanions.Framework.Models.Companion;
+using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using StardewValley;
 using StardewValley.Objects;
 using System;
@@ -17,6 +20,10 @@ namespace CustomCompanions.Framework.Managers
         internal static bool IsSummoningRing(Ring ring)
         {
             if (ring != null && rings.Any(r => r.Name == ring.Name))
+            {
+                return true;
+            }
+            else if (HandleContentPatcherRing(ring))
             {
                 return true;
             }
@@ -62,6 +69,48 @@ namespace CustomCompanions.Framework.Managers
             }
         }
 
+        private static bool HandleContentPatcherRing(Ring ring)
+        {
+            if (rings.Any(r => r.Name == ring.Name))
+            {
+                return true;
+            }
+
+            if (Game1.objectData.TryGetValue(ring.ItemId, out var data) is false || data is null)
+            {
+                return false;
+            }
+
+            if (data.CustomFields.TryGetValue("PeacefulEnd.CustomCompanions/Companions/Variety", out string rawVarietyCount) && int.TryParse(rawVarietyCount, out int actualVarietyCount))
+            {
+                Dictionary<string, CompanionData> companions = new Dictionary<string, CompanionData>();
+                for (int i = 0; i < actualVarietyCount; i++)
+                {
+                    if (data.CustomFields.TryGetValue($"PeacefulEnd.CustomCompanions/Companions/{i}/Id", out string companionId))
+                    {
+                        if (data.CustomFields.TryGetValue($"PeacefulEnd.CustomCompanions/Companions/{i}/NumberToSummon", out string rawNumberToSummon) && int.TryParse(rawNumberToSummon, out int actualNumberToSummon))
+                        {
+                            companions[companionId] = new CompanionData() { NumberToSummon = actualNumberToSummon };
+                        }
+                    }
+                }
+
+                if (companions.Count > 0)
+                {
+                    rings.Add(new RingModel()
+                    {
+                        Name = ring.Name,
+                        Companions = companions,
+                        AddedViaContentPatcher = true
+                    });
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         internal static void HandleEquip(Farmer who, GameLocation location, Ring ring)
         {
             var summoningRing = rings.FirstOrDefault(r => r.Name == ring.Name);
@@ -70,9 +119,18 @@ namespace CustomCompanions.Framework.Managers
                 CustomCompanions.monitor.Log($"Failed to find a summoning ring match to [{ring.Name}]");
                 return;
             }
-
             var selectedCompanionData = summoningRing.Companions.ElementAt(Game1.random.Next(summoningRing.Companions.Count));
-            var companion = CompanionManager.companionModels.FirstOrDefault(c => c.Name == selectedCompanionData.Key && c.Owner == summoningRing.Owner);
+
+            CompanionModel companion;
+            if (summoningRing.AddedViaContentPatcher is true)
+            {
+                companion = CompanionManager.companionModels.FirstOrDefault(c => c.GetId() == selectedCompanionData.Key);
+            }
+            else
+            {
+                companion = CompanionManager.companionModels.FirstOrDefault(c => c.Name == selectedCompanionData.Key && c.Owner == summoningRing.Owner);
+            }
+
             if (companion is null)
             {
                 CustomCompanions.monitor.Log($"Failed to find a companion match to [{selectedCompanionData}] for the summoning ring [{ring.Name}]");
