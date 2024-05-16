@@ -8,7 +8,7 @@
   "Dependencies": [
     {
       "UniqueID": "spacechase0.JsonAssets",
-      "IsRequired": true
+      "IsRequired": false
     }
   ],
   "ContentPackFor": {
