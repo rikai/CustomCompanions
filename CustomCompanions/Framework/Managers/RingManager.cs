@@ -76,7 +76,7 @@ namespace CustomCompanions.Framework.Managers
                 return true;
             }
 
-            if (Game1.objectData.TryGetValue(ring.ItemId, out var data) is false || data is null)
+            if (Game1.objectData.TryGetValue(ring.ItemId, out var data) is false || data is null || data.CustomFields is null)
             {
                 return false;
             }
