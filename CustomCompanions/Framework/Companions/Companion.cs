@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Extensions;
 using StardewValley.GameData.HomeRenovations;
 using System;
 using System.Collections.Generic;
@@ -407,7 +408,7 @@ namespace CustomCompanions.Framework.Companions
             {
                 this.lightPulseTimer = model.Light.PulseSpeed;
 
-                this.light = new LightSource(1, new Vector2(this.position.X + model.Light.OffsetX, this.position.Y + model.Light.OffsetY), model.Light.Radius, CustomCompanions.GetColorFromArray(model.Light.Color), this.id, LightSource.LightContext.None, 0L);
+                this.light = new LightSource($"{this.model.GetId()}_{Guid.NewGuid()}", 1, new Vector2(this.position.X + model.Light.OffsetX, this.position.Y + model.Light.OffsetY), model.Light.Radius, CustomCompanions.GetColorFromArray(model.Light.Color));
                 Game1.currentLightSources.Add(this.light);
             }
 
@@ -1044,7 +1045,7 @@ namespace CustomCompanions.Framework.Companions
         {
             if (this.light != null)
             {
-                Game1.currentLightSources.Remove(this.light);
+                Game1.currentLightSources.Remove(this.light.Id);
             }
         }
 
@@ -1110,7 +1111,7 @@ namespace CustomCompanions.Framework.Companions
                 {
                     if (this.light != null)
                     {
-                        Game1.currentLightSources.Remove(this.light);
+                        Game1.currentLightSources.Remove(this.light.Id);
                         this.light = null;
                     }
 
@@ -1118,7 +1119,7 @@ namespace CustomCompanions.Framework.Companions
                     {
                         this.lightPulseTimer = updatedModel.Light.PulseSpeed;
 
-                        this.light = new LightSource(1, new Vector2(this.position.X + updatedModel.Light.OffsetX, this.position.Y + updatedModel.Light.OffsetY), updatedModel.Light.Radius, CustomCompanions.GetColorFromArray(updatedModel.Light.Color), this.id, LightSource.LightContext.None, 0L);
+                        this.light = new LightSource($"{this.model.GetId()}_{Guid.NewGuid()}", 1, new Vector2(this.position.X + updatedModel.Light.OffsetX, this.position.Y + updatedModel.Light.OffsetY), updatedModel.Light.Radius, CustomCompanions.GetColorFromArray(updatedModel.Light.Color));
                         Game1.currentLightSources.Add(this.light);
                     }
                 }

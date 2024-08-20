@@ -4,6 +4,7 @@ using CustomCompanions.Framework.Models.Companion;
 using Microsoft.Xna.Framework;
 using Netcode;
 using StardewValley;
+using StardewValley.Extensions;
 using StardewValley.Locations;
 using StardewValley.Network;
 using System;
@@ -203,7 +204,7 @@ namespace CustomCompanions.Framework.Managers
             foreach (var companion in location.characters.Where(c => IsSceneryCompanion(c) && (c as MapCompanion).light != null))
             {
                 MapCompanion mapCompanion = companion as MapCompanion;
-                if (!Game1.currentLightSources.Contains(mapCompanion.light))
+                if (!Game1.currentLightSources.ContainsKey(mapCompanion.light.Id))
                 {
                     Game1.currentLightSources.Add(mapCompanion.light);
                 }
