@@ -212,7 +212,7 @@ namespace CustomCompanions.Framework.Companions
 
                         if (companion.currentLocation.isCollidingPosition(companion.nextPosition(newDirection), Game1.viewport, companion))
                         {
-                            companion.SetMovingDirection(companion.previousDirection);
+                            companion.SetMovingDirection(companion.previousDirection.Value);
                             this.behaviorTimer = Game1.random.Next(2000, 10000);
                             return false;
                         }
