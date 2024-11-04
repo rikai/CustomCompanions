@@ -437,13 +437,13 @@ namespace CustomCompanions
                             }
 
                             // Check if it is already spawned
-                            if (location.characters.Any(c => CompanionManager.IsSceneryCompanion(c) && c is MapCompanion mapCompanion && mapCompanion.targetTile.Value == new Vector2(x, y) * 64f && mapCompanion.companionKey == companion.GetId()))
+                            if (location.characters.Any(c => CompanionManager.IsSceneryCompanion(c) && c is MapCompanion mapCompanion && mapCompanion.targetTile.Value == new Vector2(x, y) * 64f && mapCompanion.companionKey.Value == companion.GetId()))
                             {
                                 continue;
                             }
 
                             // Check if the companion is allowed to be spawned
-                            if (CompanionManager.denyRespawnCompanions.Any(s => s.Location == location && s.Tile == new Vector2(x, y) && s.Companions.Any(c => c.companionKey == companion.GetId())))
+                            if (CompanionManager.denyRespawnCompanions.Any(s => s.Location == location && s.Tile == new Vector2(x, y) && s.Companions.Any(c => c.companionKey.Value == companion.GetId())))
                             {
                                 continue;
                             }

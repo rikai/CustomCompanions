@@ -57,8 +57,8 @@ namespace CustomCompanions.Framework.Companions
             this.canHalt = !base.IsFlying() && this.model.CanHalt;
             this.motionMultiplier = 1f;
 
-            // Verify the location the companion is spawning on isn't occupied (if collidesWithOtherCharacters == true)
-            if (this.collidesWithOtherCharacters)
+            // Verify the location the companion is spawning on isn't occupied (if collidesWithOtherCharacters.Value == true)
+            if (this.collidesWithOtherCharacters.Value)
             {
                 this.PlaceInEmptyTile();
             }
@@ -123,8 +123,8 @@ namespace CustomCompanions.Framework.Companions
                 this.canHalt = !base.IsFlying();
                 this.motionMultiplier = 1f;
 
-                // Verify the location the companion is spawning on isn't occupied (if collidesWithOtherCharacters == true)
-                if (this.collidesWithOtherCharacters)
+                // Verify the location the companion is spawning on isn't occupied (if collidesWithOtherCharacters.Value == true)
+                if (this.collidesWithOtherCharacters.Value)
                 {
                     this.PlaceInEmptyTile();
                 }
@@ -360,7 +360,7 @@ namespace CustomCompanions.Framework.Companions
         internal bool IsCollidingPosition(Rectangle position, GameLocation location, bool isPathFinding = false)
         {
             var collidingCharacter = location.isCollidingWithCharacter(this.nextPosition(this.FacingDirection));
-            if (collidingCharacter != null && collidingCharacter is MapCompanion companion && !companion.Equals(this) && !companion.collidesWithOtherCharacters)
+            if (collidingCharacter != null && collidingCharacter is MapCompanion companion && !companion.Equals(this) && !companion.collidesWithOtherCharacters.Value)
             {
                 return false;
             }
@@ -888,16 +888,16 @@ namespace CustomCompanions.Framework.Companions
 
                 // Handle animating
                 base.isIdle.Value = !this.isMoving();
-                base.Animate(time, base.isIdle);
+                base.Animate(time, base.isIdle.Value);
                 base.update(time, location, -1, move: false);
-                base.wasIdle = base.isIdle;
+                base.wasIdle = base.isIdle.Value;
 
                 this.MovePositionViaMotion(time, location);
             }
             else
             {
-                this.Animate(time, this.isIdle);
-                this.wasIdle = this.isIdle;
+                this.Animate(time, this.isIdle.Value);
+                this.wasIdle = this.isIdle.Value;
             }
         }
 
@@ -910,16 +910,16 @@ namespace CustomCompanions.Framework.Companions
 
                 // Handle animating
                 base.isIdle.Value = !this.isMoving();
-                base.Animate(time, base.isIdle);
+                base.Animate(time, base.isIdle.Value);
                 base.update(time, location, -1, move: false);
-                base.wasIdle = base.isIdle;
+                base.wasIdle = base.isIdle.Value;
 
                 this.MovePositionViaSpeed(time, location);
             }
             else
             {
-                this.Animate(time, this.isIdle);
-                this.wasIdle = this.isIdle;
+                this.Animate(time, this.isIdle.Value);
+                this.wasIdle = this.isIdle.Value;
             }
         }
 
@@ -929,9 +929,9 @@ namespace CustomCompanions.Framework.Companions
             if (Game1.IsMasterGame)
             {
                 base.isIdle.Value = false;
-                base.Animate(time, base.isIdle);
+                base.Animate(time, base.isIdle.Value);
                 base.update(time, location, -1, move: false);
-                base.wasIdle = base.isIdle;
+                base.wasIdle = base.isIdle.Value;
 
                 var gravity = -0.5f;
                 if (arguments != null)
@@ -950,8 +950,8 @@ namespace CustomCompanions.Framework.Companions
             }
             else
             {
-                this.Animate(time, this.isIdle);
-                this.wasIdle = this.isIdle;
+                this.Animate(time, this.isIdle.Value);
+                this.wasIdle = this.isIdle.Value;
             }
         }
 
@@ -964,9 +964,9 @@ namespace CustomCompanions.Framework.Companions
 
                 // Handle animating
                 base.isIdle.Value = !this.isMoving();
-                base.Animate(time, base.isIdle);
+                base.Animate(time, base.isIdle.Value);
                 base.update(time, location, -1, move: false);
-                base.wasIdle = base.isIdle;
+                base.wasIdle = base.isIdle.Value;
 
                 var gravity = -0.5f;
                 var jumpScale = 10f;
@@ -1003,8 +1003,8 @@ namespace CustomCompanions.Framework.Companions
             }
             else
             {
-                this.Animate(time, this.isIdle);
-                this.wasIdle = this.isIdle;
+                this.Animate(time, this.isIdle.Value);
+                this.wasIdle = this.isIdle.Value;
             }
         }
 
@@ -1034,16 +1034,16 @@ namespace CustomCompanions.Framework.Companions
                 this.MoveInSquare(time, location, squareWidth, squareHeight);
 
                 this.isIdle.Value = false;
-                base.Animate(time, this.isIdle);
+                base.Animate(time, this.isIdle.Value);
                 base.update(time, location, -1, move: false);
-                this.wasIdle = this.isIdle;
+                this.wasIdle = this.isIdle.Value;
 
                 this.MovePositionViaSpeed(time, location);
             }
             else
             {
-                this.Animate(time, this.isIdle);
-                this.wasIdle = this.isIdle;
+                this.Animate(time, this.isIdle.Value);
+                this.wasIdle = this.isIdle.Value;
             }
 
         }
@@ -1091,16 +1091,16 @@ namespace CustomCompanions.Framework.Companions
                 this.FollowActivePath();
 
                 this.isIdle.Value = !this.isMoving();
-                base.Animate(time, this.isIdle);
+                base.Animate(time, this.isIdle.Value);
                 base.update(time, location, -1, move: false);
-                this.wasIdle = this.isIdle;
+                this.wasIdle = this.isIdle.Value;
 
                 this.MovePositionViaSpeed(time, location);
             }
             else
             {
-                this.Animate(time, this.isIdle);
-                this.wasIdle = this.isIdle;
+                this.Animate(time, this.isIdle.Value);
+                this.wasIdle = this.isIdle.Value;
             }
         }
 
@@ -1163,9 +1163,9 @@ namespace CustomCompanions.Framework.Companions
                 this.FollowActivePath();
 
                 this.isIdle.Value = !this.isMoving();
-                base.Animate(time, this.isIdle);
+                base.Animate(time, this.isIdle.Value);
                 base.update(time, location, -1, move: false);
-                this.wasIdle = this.isIdle;
+                this.wasIdle = this.isIdle.Value;
 
                 this.MovePositionViaSpeed(time, location);
 
@@ -1173,8 +1173,8 @@ namespace CustomCompanions.Framework.Companions
             }
             else
             {
-                this.Animate(time, this.isIdle);
-                this.wasIdle = this.isIdle;
+                this.Animate(time, this.isIdle.Value);
+                this.wasIdle = this.isIdle.Value;
             }
         }
 
@@ -1287,9 +1287,9 @@ namespace CustomCompanions.Framework.Companions
                 this.FollowActivePath();
 
                 this.isIdle.Value = !this.isMoving();
-                base.Animate(time, this.isIdle);
+                base.Animate(time, this.isIdle.Value);
                 base.update(time, location, -1, move: false);
-                this.wasIdle = this.isIdle;
+                this.wasIdle = this.isIdle.Value;
 
                 this.MovePositionViaSpeed(time, location);
 
@@ -1297,8 +1297,8 @@ namespace CustomCompanions.Framework.Companions
             }
             else
             {
-                this.Animate(time, this.isIdle);
-                this.wasIdle = this.isIdle;
+                this.Animate(time, this.isIdle.Value);
+                this.wasIdle = this.isIdle.Value;
             }
         }
 
@@ -1311,16 +1311,16 @@ namespace CustomCompanions.Framework.Companions
 
                 // Handle animating
                 base.isIdle.Value = true;
-                base.Animate(time, base.isIdle);
+                base.Animate(time, base.isIdle.Value);
                 base.update(time, location, -1, move: false);
-                base.wasIdle = base.isIdle;
+                base.wasIdle = base.isIdle.Value;
 
                 this.FaceAndMoveInDirection(this.FacingDirection);
             }
             else
             {
-                this.Animate(time, this.isIdle);
-                this.wasIdle = this.isIdle;
+                this.Animate(time, this.isIdle.Value);
+                this.wasIdle = this.isIdle.Value;
             }
         }
     }

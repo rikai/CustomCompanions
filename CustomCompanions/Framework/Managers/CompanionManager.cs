@@ -4,6 +4,7 @@ using CustomCompanions.Framework.Models.Companion;
 using Microsoft.Xna.Framework;
 using Netcode;
 using StardewValley;
+using StardewValley.Extensions;
 using StardewValley.Locations;
 using StardewValley.Network;
 using System;
@@ -107,7 +108,7 @@ namespace CustomCompanions.Framework.Managers
 
             // Ensures each collision based companion is moved to an empty tile
             companions.ForEach(c => location.characters.Add(c));
-            foreach (var companion in companions.Where(c => c.collidesWithOtherCharacters))
+            foreach (var companion in companions.Where(c => c.collidesWithOtherCharacters.Value))
             {
                 companion.PlaceInEmptyTile();
             }
@@ -203,7 +204,7 @@ namespace CustomCompanions.Framework.Managers
             foreach (var companion in location.characters.Where(c => IsSceneryCompanion(c) && (c as MapCompanion).light != null))
             {
                 MapCompanion mapCompanion = companion as MapCompanion;
-                if (!Game1.currentLightSources.Contains(mapCompanion.light))
+                if (!Game1.currentLightSources.ContainsKey(mapCompanion.light.Id))
                 {
                     Game1.currentLightSources.Add(mapCompanion.light);
                 }
@@ -278,7 +279,7 @@ namespace CustomCompanions.Framework.Managers
                     return true;
                 }
 
-                if (companion.GetId() != mapCompanion.companionKey)
+                if (companion.GetId() != mapCompanion.companionKey.Value)
                 {
                     return true;
                 }
