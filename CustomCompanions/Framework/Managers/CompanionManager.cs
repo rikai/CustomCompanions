@@ -108,7 +108,7 @@ namespace CustomCompanions.Framework.Managers
 
             // Ensures each collision based companion is moved to an empty tile
             companions.ForEach(c => location.characters.Add(c));
-            foreach (var companion in companions.Where(c => c.collidesWithOtherCharacters))
+            foreach (var companion in companions.Where(c => c.collidesWithOtherCharacters.Value))
             {
                 companion.PlaceInEmptyTile();
             }
@@ -279,7 +279,7 @@ namespace CustomCompanions.Framework.Managers
                     return true;
                 }
 
-                if (companion.GetId() != mapCompanion.companionKey)
+                if (companion.GetId() != mapCompanion.companionKey.Value)
                 {
                     return true;
                 }

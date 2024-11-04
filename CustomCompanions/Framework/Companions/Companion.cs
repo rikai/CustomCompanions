@@ -134,7 +134,7 @@ namespace CustomCompanions.Framework.Companions
                 this.currentLocation = owner.currentLocation;
 
                 // Verify the location the companion is spawning on isn't occupied (if collidesWithOtherCharacters == true)
-                if (this.collidesWithOtherCharacters)
+                if (this.collidesWithOtherCharacters.Value)
                 {
                     this.PlaceInEmptyTile();
                 }
@@ -179,12 +179,12 @@ namespace CustomCompanions.Framework.Companions
             }
             else
             {
-                if ((this.yJumpOffset == 0 && this.IsHovering() && this.isIdle) || this.IsJumper())
+                if ((this.yJumpOffset == 0 && this.IsHovering() && this.isIdle.Value) || this.IsJumper())
                 {
                     this.idleBehavior.PerformIdleBehavior(this, time, this.model.IdleArguments);
                 }
-                this.Animate(time, this.isIdle);
-                this.wasIdle = this.isIdle;
+                this.Animate(time, this.isIdle.Value);
+                this.wasIdle = this.isIdle.Value;
             }
         }
 
@@ -321,7 +321,7 @@ namespace CustomCompanions.Framework.Companions
             var spriteLayerDepth = this.IsFlying() ? 0.991f : Math.Max(0f, base.drawOnTop ? 0.991f : ((float)base.StandingPixel.Y / 10000f));
             float layer_depth = ((float)(this.GetBoundingBox().Center.Y + 4) + base.Position.X / 20000f) / 10000f;
 
-            b.Draw(this.Sprite.Texture, base.getLocalPosition(Game1.viewport) + new Vector2(this.GetSpriteWidthForPositioning() * 4 / 2, this.Sprite.getHeight() / 2) + ((this.shakeTimer > 0) ? new Vector2(Game1.random.Next(-1, 2), Game1.random.Next(-1, 2)) : Vector2.Zero), this.Sprite.SourceRect, this.isPrismatic ? Utility.GetPrismaticColor(348 + (int)this.specialNumber.Value, 5f) : color.Value, this.rotation, new Vector2(this.Sprite.SpriteWidth / 2, (float)this.Sprite.SpriteHeight * 3f / 4f), Math.Max(0.2f, base.Scale) * 4f, (base.flip || (this.Sprite.CurrentAnimation != null && this.Sprite.CurrentAnimation[this.Sprite.currentAnimationIndex].flip)) ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layer_depth);
+            b.Draw(this.Sprite.Texture, base.getLocalPosition(Game1.viewport) + new Vector2(this.GetSpriteWidthForPositioning() * 4 / 2, this.Sprite.getHeight() / 2) + ((this.shakeTimer > 0) ? new Vector2(Game1.random.Next(-1, 2), Game1.random.Next(-1, 2)) : Vector2.Zero), this.Sprite.SourceRect, this.isPrismatic.Value ? Utility.GetPrismaticColor(348 + (int)this.specialNumber.Value, 5f) : color.Value, this.rotation, new Vector2(this.Sprite.SpriteWidth / 2, (float)this.Sprite.SpriteHeight * 3f / 4f), Math.Max(0.2f, base.Scale) * 4f, (base.flip || (this.Sprite.CurrentAnimation != null && this.Sprite.CurrentAnimation[this.Sprite.currentAnimationIndex].flip)) ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layer_depth);
             if (this.Breather && this.shakeTimer <= 0 && !this.isMoving())
             {
                 Rectangle chestBox = this.Sprite.SourceRect;
@@ -331,11 +331,11 @@ namespace CustomCompanions.Framework.Companions
                 chestBox.Width = this.Sprite.SpriteWidth / 2;
                 Vector2 chestPosition = new Vector2(this.Sprite.SpriteWidth * 4 / 2, 8f);
                 float breathScale = Math.Max(0f, (float)Math.Ceiling(Math.Sin(Game1.currentGameTime.TotalGameTime.TotalMilliseconds / 600.0 + (double)(base.DefaultPosition.X * 20f))) / 4f);
-                b.Draw(this.Sprite.Texture, base.getLocalPosition(Game1.viewport) + chestPosition + ((this.shakeTimer > 0) ? new Vector2(Game1.random.Next(-1, 2), Game1.random.Next(-1, 2)) : Vector2.Zero), chestBox, this.isPrismatic ? Utility.GetPrismaticColor(348 + (int)this.specialNumber.Value, 5f) : color.Value * alpha, this.rotation, new Vector2(chestBox.Width / 2, chestBox.Height / 2 + 1), Math.Max(0.2f, base.Scale) * 4f + breathScale, base.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, spriteLayerDepth + 0.001f);
+                b.Draw(this.Sprite.Texture, base.getLocalPosition(Game1.viewport) + chestPosition + ((this.shakeTimer > 0) ? new Vector2(Game1.random.Next(-1, 2), Game1.random.Next(-1, 2)) : Vector2.Zero), chestBox, this.isPrismatic.Value ? Utility.GetPrismaticColor(348 + (int)this.specialNumber.Value, 5f) : color.Value * alpha, this.rotation, new Vector2(chestBox.Width / 2, chestBox.Height / 2 + 1), Math.Max(0.2f, base.Scale) * 4f + breathScale, base.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, spriteLayerDepth + 0.001f);
             }
 
             var shadowLayerDepth = spriteLayerDepth - 0.001f;
-            if (this.hasShadow)
+            if (this.hasShadow.Value)
             {
                 if (this.model.Shadow != null)
                 {
@@ -620,13 +620,13 @@ namespace CustomCompanions.Framework.Companions
                 }
 
                 this.isIdle.Value = false;
-                this.Animate(time, this.isIdle);
+                this.Animate(time, this.isIdle.Value);
                 this.wasIdle = false;
             }
             else
             {
                 this.isIdle.Value = true;
-                this.Animate(time, this.isIdle);
+                this.Animate(time, this.isIdle.Value);
                 this.wasIdle = true;
             }
         }
@@ -635,7 +635,7 @@ namespace CustomCompanions.Framework.Companions
         {
             bool hasIdleFrames = HasIdleFrames(this.idleUniformFrames != null ? -1 : this.FacingDirection);
 
-            if (this.Sprite.CurrentAnimation != null && (!hasIdleFrames || (hasIdleFrames && this.wasIdle == isIdle)) && (this.previousDirection == this.FacingDirection || this.activeUniformFrames != null))
+            if (this.Sprite.CurrentAnimation != null && (!hasIdleFrames || (hasIdleFrames && this.wasIdle == isIdle)) && (this.previousDirection.Value == this.FacingDirection || this.activeUniformFrames != null))
             {
                 this.Sprite.loop = false;
                 if (!this.Sprite.animateOnce(time))
@@ -1035,7 +1035,7 @@ namespace CustomCompanions.Framework.Companions
                 Game1.currentLightSources.Add(this.light);
             }
 
-            if (this.collidesWithOtherCharacters)
+            if (this.collidesWithOtherCharacters.Value)
             {
                 this.PlaceInEmptyTile();
             }
