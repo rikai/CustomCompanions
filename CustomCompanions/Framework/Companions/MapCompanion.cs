@@ -79,7 +79,7 @@ namespace CustomCompanions.Framework.Companions
             if (this.model.Portrait != null && !String.IsNullOrEmpty(this.model.PortraitSheetPath))
             {
                 this.displayName = String.IsNullOrEmpty(this.model.Portrait.PortraitDisplayName) ? this.displayName : this.model.Portrait.PortraitDisplayName;
-                this.Portrait = CustomCompanions.modHelper.ContentPacks.GetOwned().First(c => c.Manifest.UniqueID == this.model.Owner).ModContent.Load<Texture2D>(this.model.PortraitSheetPath);
+                this.Portrait = TryLoadTexture2D(this.model.PortraitSheetPath, this.model.Owner);
             }
         }
 
@@ -182,6 +182,21 @@ namespace CustomCompanions.Framework.Companions
                 {
                     base.PlayRequiredSounds(time, this.isMoving());
                 }
+            }
+        }
+
+        internal static Texture2D TryLoadTexture2D(string assetPath, string packOwner)
+        {
+            if (Game1.content.DoesAssetExist<Texture2D>(assetPath))
+            {
+                CustomCompanions.monitor.Log($"TryLoadTexture2D: Game1.content.Load<Texture2D>({assetPath})", StardewModdingAPI.LogLevel.Error);
+                // content pipeline integration: attempt to load from content if this is a valid asset name
+                return Game1.content.Load<Texture2D>(assetPath);
+            }
+            else
+            {
+                CustomCompanions.monitor.Log($"TryLoadTexture2D: CustomCompanions.modHelper.ContentPacks.GetOwned().First(c => c.Manifest.UniqueID == packOwner).ModContent.Load<Texture2D>({assetPath});", StardewModdingAPI.LogLevel.Error);
+                return CustomCompanions.modHelper.ContentPacks.GetOwned().First(c => c.Manifest.UniqueID == packOwner).ModContent.Load<Texture2D>(assetPath);
             }
         }
 
@@ -300,7 +315,7 @@ namespace CustomCompanions.Framework.Companions
             if (this.model.Portrait != null && !String.IsNullOrEmpty(this.model.PortraitSheetPath))
             {
                 this.displayName = String.IsNullOrEmpty(this.model.Portrait.PortraitDisplayName) ? this.displayName : this.model.Portrait.PortraitDisplayName;
-                this.Portrait = CustomCompanions.modHelper.ContentPacks.GetOwned().First(c => c.Manifest.UniqueID == this.model.Owner).ModContent.Load<Texture2D>(this.model.PortraitSheetPath);
+                this.Portrait = TryLoadTexture2D(this.model.PortraitSheetPath, this.model.Owner);
             }
         }
 
