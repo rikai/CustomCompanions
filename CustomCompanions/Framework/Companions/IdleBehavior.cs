@@ -172,7 +172,15 @@ namespace CustomCompanions.Framework.Companions
 
                     if (Game1.random.NextDouble() <= 0.5)
                     {
-                        this.destinationTile = Utility.getRandomAdjacentOpenTile(companion.Tile, companion.currentLocation) * 64f;
+                        // Vector2.Zero from vanilla reads as "tile (0, 0) is open" and sends the
+                        // companion towards the corner of the map. Skipping it instead, as a
+                        // companion standing next to a walkable (0, 0) is extremely unlikely
+                        // Review again if this is ever addressed in vanilla
+                        var openTile = Utility.getRandomAdjacentOpenTile(companion.Tile, companion.currentLocation);
+                        if (openTile != Vector2.Zero)
+                        {
+                            this.destinationTile = openTile * 64f;
+                        }
                     }
                 }
 
