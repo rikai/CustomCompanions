@@ -47,7 +47,10 @@ namespace CustomCompanions.Framework.Companions
                     break;
                 case "JUMPER":
                     this.behavior = Behavior.JUMPER;
-                    destinationTile = companion.targetTile.Value;
+                    // targetTile hasn't been set yet so it reads as Vector2.Zero
+                    // and will slowly send the companion to (0, 0). Starts from
+                    // where the companion actually is instead
+                    destinationTile = companion.Position;
                     break;
                 case "WALK_SQUARE":
                     this.behavior = Behavior.WALK_SQUARE;
